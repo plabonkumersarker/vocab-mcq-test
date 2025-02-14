@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary MCQ Test</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background: #ccc;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .level-btn {
+            display: block;
+            width: 80%;
+            max-width: 400px;
+            margin: 10px auto;
+            padding: 12px;
+            background: #7886C7;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .level-btn:hover {
+            background: #2D336B;
+        }
+
+        .sections {
+            display: none;
+            margin-top: 20px;
+            margin-bottom: 50px;
+        }
+
+        .sections a {
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+            background: #2D336B;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+
+        .author {
+        font-size: 18px;
+        background: #2c3e50;
+        color: #ecf0f1;
+        padding: 8px;
+        border-radius: 3px;
+        text-align: center;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+    }
+    
+    .author a {
+    color: #A9B5DF;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+        @media (max-width: 600px) {
+            .level-btn {
+                font-size: 16px;
+                padding: 10px;
+            }
+
+            .sections a {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Vocabulary MCQ Test</h1>
+
+    <div class="container">
+        <button class="level-btn" onclick="showSections('easy')">Easy</button>
+        <button class="level-btn" onclick="showSections('medium')">Medium</button>
+        <button class="level-btn" onclick="showSections('hard')">Hard</button>
+        <button class="level-btn" onclick="showSections('extreme')">Extreme</button>
+
+        <div id="easy" class="sections">
+            <h2>Easy Level</h2>
+            <a href="a.html">Section A</a>
+            <a href="b.html">Section B</a>
+            <a href="c.html">Section C</a>
+            <a href="d.html">Section D</a>
+            <a href="e.html">Section E</a>
+            <a href="f.html">Section F</a>
+            <a href="g.html">Section G</a>
+            <a href="h.html">Section H</a>
+            <a href="i.html">Section I</a>
+            <a href="j.html">Section J</a>
+        </div>
+
+        <div id="medium" class="sections">
+            <h2>Medium Level</h2>
+            <a href="k.html">Section K</a>
+            <a href="l.html">Section L</a>
+            <a href="m.html">Section M</a>
+            <a href="n.html">Section N</a>
+            <a href="o.html">Section O</a>
+        </div>
+
+        <div id="hard" class="sections">
+            <h2>Hard Level</h2>
+            <a href="p.html">Section P</a>
+            <a href="q.html">Section Q</a>
+            <a href="r.html">Section R</a>
+            <a href="s.html">Section S</a>
+        </div>
+
+        <div id="extreme" class="sections">
+            <h2>Extreme Level</h2>
+            <a href="t.html">Section T</a>
+            <a href="u.html">Section U</a>
+            <a href="v.html">Section V</a>
+            <a href="w.html">Section W</a>
+        </div>
+
+    </div>
+<div class="author">
+    <p>© 2025 <a href="https://plabonkumersarker.github.io/profile/">Plabon</a></p>
+</div>
+
+    <script>
+        function showSections(level) {
+            // Hide all sections first
+            let sections = document.querySelectorAll('.sections');
+            sections.forEach(sec => sec.style.display = 'none');
+
+            // Show selected section
+            document.getElementById(level).style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>

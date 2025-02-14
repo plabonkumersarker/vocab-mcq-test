@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f4f4f4;
+            overflow: hidden;
+            position: relative;
+        }
+
+        h2 {
+            color: #2c3e50;
+        }
+
+        #quiz-container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 10;
+        }
+
+        #question {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .option-button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #ecf0f1;
+            transition: 0.3s;
+        }
+
+        .option-button:hover {
+            background-color: #bdc3c7;
+        }
+
+        .correct {
+            background-color: #2ecc71 !important;
+            color: white;
+        }
+
+        .incorrect {
+            background-color: #e74c3c !important;
+            color: white;
+        }
+
+        #score-container {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Green Overlay Effect */
+        #progress-overlay {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0%;
+            background: rgba(46, 204, 113, 0.7); /* Greenish overlay */
+            transition: height 0.5s ease-in-out;
+            z-index: 5;
+        }
+
+        .huge-celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: gold;
+            font-size: 50px;
+            font-weight: bold;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 20;
+        }
+
+        #huge-celebration button {
+            padding: 5px 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background-color: #3498db;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+            margin-top: 10px;
+        }
+
+        #huge-celebration button:hover {
+            background-color: #2980b9;
+            transform: scale(1.1);
+        }
+
+        #huge-celebration button:focus {
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.7);
+        }
+
+        .more-button {
+            background-color: #f39c12;
+            color: white;
+            padding: 5px 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .more-button:hover {
+            background-color: #e67e22;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h2>Vocabulary MCQ Test(421-460)</h2>
+
+    <div id="quiz-container">
+        <p id="question"></p>
+        <div id="options"></div>
+        <button id="more-button" class="more-button" onclick="openDictionary()" style="display: none;">More</button>
+    </div>
+
+    <div id="score-container">Correct Answers: <span id="score">0</span></div>
+    
+    <div id="progress-overlay"></div>
+
+    <div id="huge-celebration" class="huge-celebration">
+        🎉 Congratulations! I am proud of you!🥳🎉  
+        <button onclick="resetQuiz()">Start Again</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.3.3/dist/confetti.browser.min.js"></script>
+    <script>
+        const questions = [
+    { question: "What is the synonym of 'Repudiate'?", options: ["Accept", "Reject", "Embrace", "Confirm"], answer: "Reject" },
+    { question: "What is the antonym of 'Resolve'?", options: ["Determination", "Doubt", "Decision", "Conviction"], answer: "Doubt" },
+    { question: "What is the synonym of 'Secrete'?", options: ["Reveal", "Hide", "Disclose", "Expose"], answer: "Hide" },
+    { question: "What is the antonym of 'Skeptic'?", options: ["Doubter", "Believer", "Cynic", "Critic"], answer: "Believer" },
+    { question: "What is the synonym of 'Striated'?", options: ["Smooth", "Grooved", "Even", "Flat"], answer: "Grooved" },
+    { question: "What is the antonym of 'Torpor'?", options: ["Lethargy", "Energy", "Sluggishness", "Dullness"], answer: "Energy" },
+    { question: "What is the synonym of 'Aberration'?", options: ["Normality", "Deviation", "Regularity", "Routine"], answer: "Deviation" },
+    { question: "What is the antonym of 'Abstain'?", options: ["Indulge", "Refrain", "Avoid", "Cease"], answer: "Indulge" },
+    { question: "What is the synonym of 'Abstruse'?", options: ["Simple", "Obscure", "Clear", "Obvious"], answer: "Obscure" },
+    { question: "What is the antonym of 'Adamant'?", options: ["Flexible", "Firm", "Unyielding", "Stubborn"], answer: "Flexible" },
+    { question: "What is the synonym of 'Admonitory'?", options: ["Encouraging", "Warning", "Cheerful", "Praising"], answer: "Warning" },
+    { question: "What is the antonym of 'Aesthete'?", options: ["Lover of beauty", "Philistine", "Artistic person", "Poet"], answer: "Philistine" },
+    { question: "What is the synonym of 'Ambiguous'?", options: ["Clear", "Uncertain", "Definite", "Precise"], answer: "Uncertain" },
+    { question: "What is the antonym of 'Ambivalent'?", options: ["Uncertain", "Undecided", "Confident", "Doubtful"], answer: "Confident" },
+    { question: "What is the synonym of 'Amenable'?", options: ["Stubborn", "Obedient", "Resistant", "Defiant"], answer: "Obedient" },
+    { question: "What is the antonym of 'Amorphous'?", options: ["Shapeless", "Structured", "Formless", "Indefinite"], answer: "Structured" },
+    { question: "What is the synonym of 'Anomalous'?", options: ["Normal", "Irregular", "Typical", "Usual"], answer: "Irregular" },
+    { question: "What is the antonym of 'Antipathy'?", options: ["Dislike", "Hatred", "Affection", "Hostility"], answer: "Affection" },
+    { question: "What is the synonym of 'Antithetical'?", options: ["Similar", "Opposed", "Alike", "Identical"], answer: "Opposed" },
+    { question: "What is the antonym of 'Apathetic'?", options: ["Indifferent", "Enthusiastic", "Unemotional", "Passive"], answer: "Enthusiastic" },
+    { question: "What is the synonym of 'Apocryphal'?", options: ["Authentic", "False", "Genuine", "Verified"], answer: "False" },
+    { question: "What is the antonym of 'Arbitrary'?", options: ["Random", "Reasoned", "Unplanned", "Haphazard"], answer: "Reasoned" },
+    { question: "What is the synonym of 'Arcane'?", options: ["Common", "Mysterious", "Ordinary", "Obvious"], answer: "Mysterious" },
+    { question: "What is the antonym of 'Artful'?", options: ["Clever", "Naive", "Sly", "Crafty"], answer: "Naive" },
+    { question: "What is the synonym of 'Askance'?", options: ["Approvingly", "Doubtfully", "Trustingly", "Encouragingly"], answer: "Doubtfully" },
+    { question: "What is the antonym of 'Audacious'?", options: ["Courageous", "Timid", "Bold", "Fearless"], answer: "Timid" },
+    { question: "What is the synonym of 'Audacity'?", options: ["Cowardice", "Boldness", "Fear", "Caution"], answer: "Boldness" },
+    { question: "What is the antonym of 'Austere'?", options: ["Strict", "Harsh", "Luxurious", "Severe"], answer: "Luxurious" },
+    { question: "What is the synonym of 'Avaricious'?", options: ["Generous", "Greedy", "Kind", "Selfless"], answer: "Greedy" },
+    { question: "What is the antonym of 'Banality'?", options: ["Originality", "Cliché", "Commonness", "Triviality"], answer: "Originality" },
+    { question: "What is the synonym of 'Betray'?", options: ["Deceive", "Loyal", "Support", "Help"], answer: "Deceive" },
+    { question: "What is the antonym of 'Blatant'?", options: ["Subtle", "Obvious", "Clear", "Loud"], answer: "Subtle" },
+    { question: "What is the synonym of 'Brazen'?", options: ["Shy", "Bold", "Timid", "Retiring"], answer: "Bold" },
+    { question: "What is the antonym of 'Bucolic'?", options: ["Rural", "Urban", "Countryside", "Pastoral"], answer: "Urban" },
+    { question: "What is the synonym of 'Bumbling'?", options: ["Skillful", "Clumsy", "Efficient", "Clever"], answer: "Clumsy" },
+    { question: "What is the antonym of 'Calumny'?", options: ["Defamation", "Praise", "Slander", "Lie"], answer: "Praise" },
+    { question: "What is the synonym of 'Chastise'?", options: ["Punish", "Reward", "Encourage", "Praise"], answer: "Punish" },
+    { question: "What is the antonym of 'Chortle'?", options: ["Laugh", "Giggle", "Sob", "Chuck"], answer: "Sob" },
+    { question: "What is the synonym of 'Circumscribe'?", options: ["Limit", "Expand", "Enlarge", "Extend"], answer: "Limit" }
+];
+
+        let score = 0;
+        let askedQuestions = [];
+        let currentWord = "";  
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function loadQuestion() {
+            if (askedQuestions.length === questions.length) {
+                askedQuestions = [];
+                score = 0;
+                document.getElementById("score").innerText = score;
+                updateProgressOverlay();
+            }
+
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * questions.length);
+            } while (askedQuestions.includes(randomIndex));
+
+            askedQuestions.push(randomIndex);
+            const questionObj = questions[randomIndex];
+
+            document.getElementById("question").innerText = questionObj.question;
+            const optionsContainer = document.getElementById("options");
+            optionsContainer.innerHTML = "";
+
+            shuffleArray(questionObj.options);
+
+            questionObj.options.forEach(option => {
+                const button = document.createElement("button");
+                button.className = "option-button";
+                button.innerText = option;
+                button.onclick = (e) => checkAnswer(e, button, questionObj.answer);
+                optionsContainer.appendChild(button);
+            });
+
+            currentWord = questionObj.question.match(/'([^']+)'/)[1];
+            document.getElementById("more-button").style.display = "block";
+        }
+
+        function checkAnswer(event, button, correctAnswer) {
+            if (button.innerText === correctAnswer) {
+                button.classList.add("correct");
+                score++;
+                document.getElementById("score").innerText = score;
+                updateProgressOverlay();
+                launchConfetti(event);
+                if (score === questions.length) {
+                    showCelebration();
+                }
+            } else {
+                button.classList.add("incorrect");
+                document.body.style.transition = "background-color 0.5s ease-in-out";  // Smooth transition effect
+            document.body.style.backgroundColor = "#e74c3c";  // Set background color to red
+            setTimeout(() => {
+                document.body.style.backgroundColor = "#f4f4f4";  // Reset background color after 0.5s
+            }, 500); // Change it back after 500ms
+        
+            }
+            setTimeout(loadQuestion, 1000);
+        }
+
+        function updateProgressOverlay() {
+            let progress = (score / questions.length) * 100;
+            document.getElementById("progress-overlay").style.height = `${progress}%`;
+        }
+
+        function showCelebration() {
+            document.getElementById("huge-celebration").style.display = "flex";
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    confetti({ particleCount: 150, spread: 80, startVelocity: 50 });
+                }, i * 300);
+            }
+        }
+
+        function resetQuiz() {
+            score = 0;
+            askedQuestions = [];
+            document.getElementById("score").innerText = score;
+            document.getElementById("progress-overlay").style.height = "0%";
+            document.getElementById("huge-celebration").style.display = "none";
+            loadQuestion();
+        }
+
+        function launchConfetti(event) {
+            confetti({ particleCount: 100, spread: 70 });
+        }
+
+       
+        
+    function openDictionary() {
+        window.open(`https://dictionary.cambridge.org/dictionary/english/${currentWord}`, '_blank');
+    }
+
+
+        loadQuestion();
+    </script>
+
+</body>
+</html>
