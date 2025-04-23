@@ -137,6 +137,78 @@
         .more-button:hover {
             background-color: #e67e22;
         }
+        #popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(128, 128, 128, 0.8); /* soft grey */
+        z-index: 19;
+        display: none;
+  }
+  #mistake-popup {
+    display: none;
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #ffffff, #f9f9f9);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    z-index: 30;
+    width: 90%;
+    max-width: 550px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+#mistake-popup h3 {
+    color: #c0392b;
+    font-size: 24px;
+    margin-bottom: 20px;
+    border-bottom: 2px dashed #e74c3c;
+    padding-bottom: 10px;
+}
+
+#mistake-list {
+    text-align: left;
+    padding-left: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #2c3e50;
+}
+
+#mistake-list li {
+    margin-bottom: 15px;
+    padding: 12px;
+    background: #fefefe;
+    border-left: 4px solid #e74c3c;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+#mistake-list li strong {
+    color: #34495e;
+}
+
+#mistake-popup button {
+    background: #3498db;
+    color: white;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+#mistake-popup button:hover {
+    background: #2980b9;
+}
 
     </style>
 </head>
@@ -206,7 +278,9 @@
 
         let score = 0;
         let askedQuestions = [];
-        let currentWord = "";  
+        let currentWord = "";
+        let mistakes = [];
+        let totalAnswered = 0;
 
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -250,26 +324,41 @@
         }
 
         function checkAnswer(event, button, correctAnswer) {
-            if (button.innerText === correctAnswer) {
-                button.classList.add("correct");
-                score++;
-                document.getElementById("score").innerText = score;
-                updateProgressOverlay();
-                launchConfetti(event);
-                if (score === questions.length) {
-                    showCelebration();
-                }
-            } else {
-                button.classList.add("incorrect");
-                document.body.style.transition = "background-color 0.5s ease-in-out";  // Smooth transition effect
-            document.body.style.backgroundColor = "#e74c3c";  // Set background color to red
-            setTimeout(() => {
-                document.body.style.backgroundColor = "#f4f4f4";  // Reset background color after 0.5s
-            }, 500); // Change it back after 500ms
-        
-            }
-            setTimeout(loadQuestion, 1000);
+    totalAnswered++;
+
+    if (button.innerText === correctAnswer) {
+        button.classList.add("correct");
+        score++;
+        document.getElementById("score").innerText = score;
+        updateProgressOverlay();
+        launchConfetti(event);
+        if (score === questions.length) {
+            showCelebration();
         }
+    } else {
+        button.classList.add("incorrect");
+        mistakes.push({
+            question: document.getElementById("question").innerText,
+            correctAnswer: correctAnswer
+        });
+
+        document.body.style.transition = "background-color 0.5s ease-in-out";
+        document.body.style.backgroundColor = "#e74c3c";
+        setTimeout(() => {
+            document.body.style.backgroundColor = "#f4f4f4";
+        }, 500);
+    }
+
+    if (totalAnswered === questions.length) {
+        setTimeout(() => {
+            if (mistakes.length > 0) {
+                showMistakePopup();
+            }
+        }, 1500);
+    }
+
+    setTimeout(loadQuestion, 1000);
+}
 
         function updateProgressOverlay() {
             let progress = (score / questions.length) * 100;
@@ -286,6 +375,8 @@
         }
 
         function resetQuiz() {
+            mistakes = [];
+            totalAnswered = 0;
             score = 0;
             askedQuestions = [];
             document.getElementById("score").innerText = score;
@@ -306,7 +397,35 @@
 
 
         loadQuestion();
-    </script>
+        function showMistakePopup() {
+    const popup = document.getElementById("mistake-popup");
+    const list = document.getElementById("mistake-list");
+    const overlay = document.getElementById("popup-overlay");
 
+    list.innerHTML = "";
+    mistakes.forEach((m, i) => {
+        const item = document.createElement("li");
+        item.innerHTML = `<strong>Q${i + 1}:</strong> ${m.question}<br><strong>Correct Answer:</strong> ${m.correctAnswer}`;
+        list.appendChild(item);
+    });
+
+    popup.style.display = "block";
+    overlay.style.display = "block";  
+}
+
+
+function closeMistakePopup() {
+    document.getElementById("mistake-popup").style.display = "none";
+    document.getElementById("popup-overlay").style.display = "none"; 
+}
+
+
+    </script>
+<div id="mistake-popup">
+    <h3 >Review Your Mistakes</h3>
+    <ul id="mistake-list" ></ul>
+    <button onclick="closeMistakePopup()" >Close</button>
+</div>
+<div id="popup-overlay"></div>
 </body>
 </html>
